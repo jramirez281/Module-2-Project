@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const cors = require('cors');
-const vhost = require('vhost');
 
 // Set up the express app
 const main = express();
@@ -110,29 +109,8 @@ main.post('/:id', (req, res) => {
   }
 });
 
-/*Setting up the redirect app
+const PORT = 5000;
 
-edited /etc/hosts:
-added 127.0.0.1    foo.example.com
-added 127.0.0.1    bar.example.com
-added 127.0.0.1    example.com
-*/
-const redirect = express();
-
-redirect.use(function(req, res) {
-  if (!module.parent) console.log(req.vhost);
-  res.redirect('http://example.com:5000/' + req.vhost[0]);
+main.listen(PORT, () => {
+  console.log(`server running on port ${PORT}`)
 });
-
-//setting up the vhost app
-//added vhost so that XMLHttpRequests can be sent to http://example.com:5000 as opposed to 127.0.0.1:5000
-let app = module.exports = express();
-
-app.use(vhost('*.example.com', redirect));
-app.use(vhost('example.com', main));
-
-if (!module.parent) {
-  const PORT = 5000;
-  app.listen(5000);
-  console.log(`server running on port ${PORT}`);
-}
