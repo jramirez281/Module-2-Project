@@ -14,8 +14,16 @@ main.use(bodyParser.urlencoded({ extended: false }));
 //allow cross origin http requests
 main.use(cors());
 
+//check if the users directory exists
+//if not, create one
+if (fs.existsSync('./users') == false){
+  fs.mkdir('./users', (err) => {
+    if (err) throw err; 
+  });
+}
+
 //ask the user to enter a user id
-main.get('/api/v1/scores', (req, res) => {
+main.get('', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.status(200).send({
     message: 'Server up. Please provide a user id to retrieve user scores.'
@@ -23,10 +31,10 @@ main.get('/api/v1/scores', (req, res) => {
 });
 
 //get a single user
-main.get('/api/v1/scores/:id', (req, res) => {
+main.get('/:id', (req, res) => {
   const id = req.params.id;
 
-  fs.readFile('/home/boyyoda/Module_2v1/users/' + id + '.txt', 'utf8', (err, data) => {
+  fs.readFile('./users/' + id + '.txt', 'utf8', (err, data) => {
     if (err) {
       res.setHeader('Content-Type', 'application/json');
       return res.status(404).send('null')
@@ -43,8 +51,8 @@ main.get('/api/v1/scores/:id', (req, res) => {
 });
 
 //create a new user & update user
-main.post('/api/v1/scores/:id', (req, res) => {
-  const dir = '/home/boyyoda/Module_2v1/users';
+main.post('/:id', (req, res) => {
+  const dir = './users';
   
   //recording amount of files in directory before writing to a text file
   let filesBefore = fs.readdirSync(dir);
@@ -71,7 +79,7 @@ main.post('/api/v1/scores/:id', (req, res) => {
   let stringData = JSON.stringify(data);
 
   //Creates a new txt file in api directory to keep data persistent
-  fs.writeFile("/home/boyyoda/Module_2v1/users/" + newId + '.txt', stringData, (err) => {
+  fs.writeFile('./users/' + newId + '.txt', stringData, (err) => {
     if (err) {
       res.setHeader('Content-Type', 'application/json');
       return res.status(500).send({
