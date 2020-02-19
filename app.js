@@ -63,7 +63,7 @@ main.post('/:id', (req, res) => {
   let newScore = parseInt(req.body.score, 10);
   
   //tests for bad client data
-  if(newScore < 0 || notNumber == true ) {
+  if(newScore < 0 || notNumber) {
     res.setHeader('Content-Type', 'application/json');
     return res.status(400).send({
       Error: "Score must be a non-negative integer"
